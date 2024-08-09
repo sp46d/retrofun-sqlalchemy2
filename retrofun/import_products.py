@@ -1,14 +1,16 @@
 import csv
-from db import Model, engine, Session
-from models import Product
+import os
+from retrofun.db import Model, engine, Session
+from retrofun.models import Product
 
+data_path = os.path.join(os.path.dirname(__file__), 'data', 'products.csv')
 
 def main():
     with Session() as session:
         with session.begin():
             Model.metadata.drop_all(engine)
             Model.metadata.create_all(engine)
-            with open('products.csv') as f:
+            with open(data_path) as f:
                 products = csv.DictReader(f)
                 for row in products:
                     row['year'] = int(row['year'])

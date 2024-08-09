@@ -1,6 +1,6 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
-from db import Model
+from retrofun.db import Model
 
 
 class Product(Model):
