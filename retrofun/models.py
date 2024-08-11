@@ -10,7 +10,7 @@ class Product(Model):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), index=True, unique=True)
-    manufacturer_id: Mapped[int] = mapped_column(ForeignKey('manufacturers.id'))
+    manufacturer_id: Mapped[Optional[int]] = mapped_column(ForeignKey('manufacturers.id'))
     year: Mapped[int] = mapped_column(index=True)
     country: Mapped[Optional[str]] = mapped_column(String(32))
     cpu: Mapped[Optional[str]] = mapped_column(String(32))
@@ -28,7 +28,7 @@ class Manufacturer(Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     
-    products: Mapped[List['Product']] = relationship(back_populates='manufacturer')
+    products: Mapped[List['Product']] = relationship(back_populates='manufacturer', cascade='all, delete-orphan')
     
     def __repr__(self) -> str:
         return f'Manufacturer({self.id}, "{self.name}")'
