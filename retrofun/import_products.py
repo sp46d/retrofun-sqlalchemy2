@@ -1,14 +1,19 @@
 import csv
 import os
-from retrofun.db import Model, engine, Session
-from retrofun.models import Product, Manufacturer, Country
+from sqlalchemy import delete
+from retrofun.db import Session
+from retrofun.models import Product, Manufacturer, Country, ProductCountry
 
 products_path = os.path.join(os.path.dirname(__file__), 'data', 'products.csv')
 
 
 def main():
-    Model.metadata.drop_all(engine)
-    Model.metadata.create_all(engine)
+    with Session() as session:
+        with session.begin():
+            session.execute(delete(ProductCountry))
+            session.execute(delete(Product))
+            session.execute(delete(Manufacturer))
+            session.execute(delete(Country))
 
     with Session() as session:
         with session.begin():
