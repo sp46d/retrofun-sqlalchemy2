@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, ForeignKey, Table, Column
+from sqlalchemy import String, Integer, ForeignKey, Table, Column, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
@@ -29,6 +29,7 @@ class Product(Model):
     manufacturer: Mapped['Manufacturer'] = relationship(back_populates='products')
     countries: Mapped[List['Country']] = relationship(secondary=ProductCountry, back_populates='products')
     order_items: WriteOnlyMapped['OrderItem'] = relationship(back_populates='product')
+    reviews: WriteOnlyMapped['ProductReview'] = relationship(back_populates='product')
     
     def __repr__(self):
         return f'Product({self.id}, "{self.name}")'
@@ -84,6 +85,7 @@ class Customer(Model):
     phone: Mapped[Optional[str]] = mapped_column(String(32))
     
     orders: WriteOnlyMapped['Order'] = relationship(back_populates='customer')
+    product_reviews: WriteOnlyMapped['ProductReview'] = relationship(back_populates='customer')
     
     def __repr__(self):
         return f'Customer({self.id.hex}, "{self.name}")'
@@ -99,3 +101,17 @@ class OrderItem(Model):
     
     product: Mapped['Product'] = relationship(back_populates='order_items')
     order: Mapped['Order'] = relationship(back_populates='order_items')
+    
+    
+class ProductReview(Model):
+    __tablename__ = 'products_reviews'
+    
+    product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), primary_key=True)
+    customer_id: Mapped[UUID] = mapped_column(ForeignKey('customers.id'), primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), index=True)
+    rating: Mapped[int]
+    comment: Mapped[Optional[str]] = mapped_column(Text)
+    
+    product: Mapped['Product'] = relationship(back_populates='reviews')
+    customer: Mapped['Customer'] = relationship(back_populates='product_reviews')
+        
