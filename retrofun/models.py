@@ -64,10 +64,8 @@ class Order(Model):
     __tablename__ = 'orders'
     
     id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True)
-    # id: Mapped[int] = mapped_column(primary_key=True)
     timestamp: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), index=True)
     customer_id: Mapped[UUID] = mapped_column(ForeignKey('customers.id'), index=True)
-    # customer_id: Mapped[int] = mapped_column(ForeignKey('customers.id'), index=True)
     
     customer: Mapped['Customer'] = relationship(back_populates='orders')
     order_items: Mapped[List['OrderItem']] = relationship(back_populates='order')
@@ -75,14 +73,12 @@ class Order(Model):
     
     def __repr__(self):
         return f'Order({self.id.hex})'
-        # return f'Order({self.id})'
     
 
 class Customer(Model):
     __tablename__ = 'customers'
     
     id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True)
-    # id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     address: Mapped[Optional[str]] = mapped_column(String(128))
     phone: Mapped[Optional[str]] = mapped_column(String(32))
@@ -91,7 +87,6 @@ class Customer(Model):
     
     def __repr__(self):
         return f'Customer({self.id.hex}, "{self.name}")'
-        # return f'Customer({self.id}, "{self.name}")'
     
     
 class OrderItem(Model):
@@ -99,7 +94,6 @@ class OrderItem(Model):
     
     product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), primary_key=True)
     order_id: Mapped[UUID] = mapped_column(ForeignKey('orders.id'), primary_key=True)
-    # order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), primary_key=True)
     unit_price: Mapped[float]
     quantity: Mapped[int]
     
