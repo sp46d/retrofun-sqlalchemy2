@@ -128,7 +128,7 @@ class BlogArticle(Model):
     timestamp: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), index=True)
     
     author: Mapped['BlogAuthor'] = relationship(back_populates='articles')
-    product: Mapped[Optional['Product']] = relationship(back_populates='blog_articles')
+    product: Mapped[Optional['Product']] = relationship(back_populates='articles')
     views: WriteOnlyMapped['BlogView'] = relationship(back_populates='article')
     
     def __repr__(self):
@@ -163,7 +163,7 @@ class BlogUser(Model):
 class BlogSession(Model):
     __tablename__ = 'blog_sessions'
     
-    id: Mapped[UUID] = mapped_column(defulat=uuid4, primary_key=True)
+    id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True)
     user_id: Mapped[UUID] = mapped_column(ForeignKey('blog_users.id'), index=True)
     
     user: Mapped['BlogUser'] = relationship(back_populates='sessions')
