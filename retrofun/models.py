@@ -87,7 +87,7 @@ class Customer(Model):
     
     orders: WriteOnlyMapped['Order'] = relationship(back_populates='customer')
     product_reviews: WriteOnlyMapped['ProductReview'] = relationship(back_populates='customer')
-    blog_users: WriteOnlyMapped['BlogUser'] = relationship(back_populates='customer')
+    blog_users: WriteOnlyMapped[Optional['BlogUser']] = relationship(back_populates='customer')
     
     def __repr__(self):
         return f'Customer({self.id.hex}, "{self.name}")'

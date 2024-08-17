@@ -2,7 +2,7 @@ import os
 import csv
 from sqlalchemy import select, delete
 from retrofun.db import Session
-from retrofun.models import Product, BlogArticle, BlogAuthor
+from retrofun.models import Product, BlogArticle, BlogAuthor, BlogUser, BlogSession, BlogView
 from datetime import datetime
 
 def main():
@@ -12,6 +12,9 @@ def main():
         with session.begin():
             session.execute(delete(BlogArticle))
             session.execute(delete(BlogAuthor))
+            session.execute(delete(BlogUser))
+            session.execute(delete(BlogSession))
+            session.execute(delete(BlogView))
             
     with Session() as session:
         with session.begin():
