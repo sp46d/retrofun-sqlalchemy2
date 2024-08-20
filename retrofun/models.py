@@ -197,7 +197,7 @@ class Language(Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     
-    articles: WriteOnlyMapped[Optional['BlogArticle']] = relationship(back_populates='language')
+    articles: WriteOnlyMapped['BlogArticle'] = relationship(back_populates='language')
     
     def __repr__(self):
         return f'Language({self.id}, "{self.name}")'
