@@ -125,11 +125,17 @@ class BlogArticle(Model):
     title: Mapped[str] = mapped_column(String(128), index=True)
     author_id: Mapped[int] = mapped_column(ForeignKey('blog_authors.id'), index=True)
     product_id: Mapped[Optional[int]] = mapped_column(ForeignKey('products.id'), index=True)
+    language_id: Mapped[Optional[int]] = mapped_column(ForeignKey('languages.id'), index=True)
+    translation_of_id: Mapped[Optional[int]] = mapped_column(ForeignKey('blog_articles.id'), index=True)
     timestamp: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc), index=True)
     
     author: Mapped['BlogAuthor'] = relationship(back_populates='articles')
     product: Mapped[Optional['Product']] = relationship(back_populates='articles')
     views: WriteOnlyMapped['BlogView'] = relationship(back_populates='article')
+    language: Mapped[Optional['Language']] = relationship(back_populates='articles')
+    translation_of: Mapped[Optional['BlogArticle']] = relationship(remote_side=id, back_populates='translations')
+    translations: Mapped[list['BlogArticle']] = relationship(back_populates='translation_of')
+    
     
     def __repr__(self):
         return f'BlogArticle({self.id}, "{self.title}")'
@@ -184,4 +190,14 @@ class BlogView(Model):
     article: Mapped['BlogArticle'] = relationship(back_populates='views')
     session: Mapped['BlogSession'] = relationship(back_populates='views')
     
+
+class Language(Model):
+    __tablename__ = 'languages'
     
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(32), unique=True, index=True)
+    
+    articles: WriteOnlyMapped[Optional['BlogArticle']] = relationship(back_populates='language')
+    
+    def __repr__(self):
+        return f'Language({self.id}, "{self.name}")'
